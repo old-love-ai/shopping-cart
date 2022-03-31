@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="../js/jq.js" type="text/javascript">
+
+		</script>
+	</head>
+	<body>
+		<!--购物车-->
+		<table id="cardTable" border="1" width="100%">
+			<thead>
+				<tr>
+					<td><input type="checkbox" id="checkAll" />全选</td>
+					<td>商品名称</td>
+					<td>单价</td>
+					<td>数量</td>
+					<td>小计</td>
+					<td>操作</td>
+				</tr>
+
+			</thead>
+			<tbody id="zhuijia">
+
+			</tbody>
+			<tfoot>
+				<tr>
+					<td>合计</td>
+					<td id="heji"></td>
+				</tr>
+			</tfoot>
+		</table>
+
+		<hr />
+		<table id="proTable" border="1" width="100%">
+			<tr>
+				<td>商品名</td>
+				<td>单价</td>
+				<td>操作</td>
+			</tr>
+			<tr>
+				<td class="proname">鼠标</td>
+				<td class="proprice">50</td>
+				<td><input type="button" value="添加购物车" /></td>
+			</tr>
+			<tr>
+				<td class="proname">键盘</td>
+				<td class="proprice">200</td>
+				<td><input type="button" value="添加购物车" /></td>
+			</tr>
+			<tr>
+				<td class="proname">鼠标垫</td>
+				<td class="proprice">10</td>
+				<td><input type="button" value="添加购物车" /></td>
+			</tr>
+			<tr>
+				<td class="proname">耳机</td>
+				<td class="proprice">1000</td>
+				<td><input type="button" value="添加购物车" /></td>
+			</tr>
+			<tr>
+
+			</tr>
+		</table>
+		<div id="" style="display: none;">
+			<table border="" cellspacing="" cellpadding="">
+				<tr id="demo1">
+					<td><input type="checkbox" class="check" /></td>
+					<td class="gwcname">电脑</td>
+					<td class="gwcprice">5000</td>
+					<td>
+						<input type="button" value="-" class="jian" />
+						<input type="text" class="num" value="1" />
+						<input type="button" value="+" class="jia" />
+					</td>
+					<td class="xiaoji">5000</td>
+					<td><input type="button" value="删除" class="shanchu"/></td>
+				</tr>
+			</table>
+
+		</div>
+
+
+		<script type="text/javascript">
+			$("input[value='添加购物车']").click(function() {
+				var father = $(this).parent().parent();
+				var priName = father.find(".proname").text();
+				var priPrice = father.find(".proprice").text();
+				var priname = $("#" + priName);
+				if (priname.length > 0) {
+					var num = priname.find(".num").val();
+					num = Number(num) + 1
+					priname.find(".num").val(num);
+					var gwprice = priname.find(".gwcprice").text();
+					var xiaoji = gwprice * num;
+					priname.find(".xiaoji").html(xiaoji)
+					heji()
+				} else {
+					var newtr = $("#demo1").clone();
+					newtr.attr("id", priName);
+					newtr.find(".gwcname").text(priName);
+					newtr.find(".gwcprice").text(priPrice);
+					newtr.find(".xiaoji").text(priPrice);
+					$("#zhuijia").append(newtr);
+				}
+
+			})
+			$("#checkAll").click(function() {
+				
+				$("#zhuijia .check").prop("checked", this.checked);
+				heji()
+			})
+			$("#zhuijia").on("click", ".shanchu", function() {
+				heji()
+				$(this).parent().parent().remove();
+			})
+
+			$("#zhuijia").on("click", ".jia", function() {
+				var father = $(this).parent().parent();
+				var gwcprice = father.find(".gwcprice").text();
+				$(this).prev().val(Number($(this).prev().val()) + 1)
+				var val = $(this).prev().val();
+				var heji1 = Number(gwcprice) * Number(val);
+				father.find(".xiaoji").html(heji1);
+				heji()
+			})
+			$("#zhuijia").on("click", ".jian", function() {
+				var father = $(this).parent().parent();
+				var gwcprice = father.find(".gwcprice").text();
+				$(this).next().val(Number($(this).next().val()) - 1)
+				var val = $(this).next().val();
+				
+				if (val == 0) {
+					$(this).parent().parent().remove();
+				} else {
+					var heji1 = Number(gwcprice) * Number(val);
+					father.find(".xiaoji").html(heji1);
+				}
+				heji()
+			})
+			function heji() {
+				var sum = 0;
+				var checkAll = $("#zhuijia .check:checked").each(function() {
+					var tr = $(this).parent().parent();
+					var xiaoji = tr.find(".xiaoji").html();
+					sum = sum + Number(xiaoji);
+				})
+				$("#heji").html(sum);
+			}
+		</script>
+	</body>
+</html>
